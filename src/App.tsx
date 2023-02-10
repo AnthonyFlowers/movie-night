@@ -1,50 +1,53 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import AuthContext from "./components/AuthContext";
+import { AuthContext, User } from "./components/AuthContext";
 import AuthPage from "./components/AuthPage";
 import CreateAccount from "./components/CreateAccount";
-import CreateGroup from "./components/CreateGroup";
-import Home from "./components/Home";
-import JoinGroup from "./components/JoinGroup";
-import Login from "./components/Login";
-import MyGroups from "./components/MyGroups";
-import Navbar from "./components/Navbar";
-import Trending from "./components/Trending";
+import { CreateGroup } from "./components/CreateGroup";
+import { Home } from "./components/Home";
+import { JoinGroup } from "./components/JoinGroup";
+import { MyGroups } from "./components/MyGroups";
+import { Navbar } from "./components/Navbar";
+import { Trending } from "./components/Trending";
 import {
   LOCAL_STORAGE_TOKEN_KEY,
   refresh,
 } from "./services/authenticationService";
 
 function App() {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<User | null>(null);
   const [refreshed, setRefreshed] = useState(false);
   const login = setUser;
+
+  const auth = {
+    user,
+    login: (u: User): void => {
+      setUser(u);
+    },
+    logout: (): void => {
+      setUser(null);
+    },
+  };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
   };
-  const auth = {
-    user,
-    login,
-    logout,
-  };
 
   useEffect(() => {
-    if (!refreshed) {
-      refresh()
-        .then((user) => {
-          login(user);
-          setRefreshed(true);
-        })
-        .catch((ex) => {
-          logout();
-          console.log(ex);
-          setRefreshed(true);
-        });
-    }
-  }, [refreshed]);
+    refresh()
+      .then((user) => {
+        login(user);
+        setRefreshed(true);
+        console.log(user);
+      })
+      .catch((ex) => {
+        logout();
+        console.log(ex);
+        setRefreshed(true);
+      });
+  }, [login]);
 
   return refreshed ? (
     <AuthContext.Provider value={auth}>

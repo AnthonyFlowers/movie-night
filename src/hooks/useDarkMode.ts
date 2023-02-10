@@ -5,7 +5,8 @@ export const LOCAL_STORAGE_DARKMODE_KEY = "mymedia-darkmode";
 function useDarkMode() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return (
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_DARKMODE_KEY)) || false
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_DARKMODE_KEY) || "dark") ||
+      false
     );
   });
 

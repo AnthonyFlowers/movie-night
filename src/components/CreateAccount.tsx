@@ -1,35 +1,22 @@
-import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { FormEvent, useContext, useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { register } from "../services/authenticationService";
-import AuthContext from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 function CreateAccount() {
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-    passwordConfirm: "",
-  });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [errs, setErrs] = useState<string[]>([]);
 
   const { login } = useContext(AuthContext);
-  const [errs, setErrs] = useState([]);
   const navigate = useNavigate();
 
-  function handleChange(evt) {
-    evt.preventDefault();
-    const newCredentials = { ...credentials };
-    newCredentials[evt.target.name] = evt.target.value;
-    setCredentials(newCredentials);
-  }
-
-  function handleSubmit(evt) {
+  function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     evt.stopPropagation();
-    if (credentials["password"] !== credentials["passwordConfirm"]) {
-      setErrs(["Passwords do not match!"]);
-      return;
-    }
-
-    register(credentials)
+    register({ username, password, passwordConfirm })
       .then((user) => {
         login(user);
         navigate("/home");
@@ -48,8 +35,8 @@ function CreateAccount() {
           id="username"
           name="username"
           placeholder="Username"
-          onChange={handleChange}
-          value={credentials["username"]}
+          onChange={(e) => setUsername(e.target.value)}
+          value={username}
           autoComplete="off"
         />
       </div>
@@ -63,8 +50,8 @@ function CreateAccount() {
           name="password"
           type="password"
           placeholder="********"
-          onChange={handleChange}
-          value={credentials["password"]}
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
           autoComplete="off"
         />
       </div>
@@ -78,8 +65,8 @@ function CreateAccount() {
           name="passwordConfirm"
           type="password"
           placeholder="********"
-          onChange={handleChange}
-          value={credentials["passwordConfirm"]}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
+          value={passwordConfirm}
           autoComplete="off"
         />
       </div>
@@ -87,6 +74,7 @@ function CreateAccount() {
         id="createAccount"
         className="btn btn-success form-control"
         type="submit"
+        disabled={password !== passwordConfirm}
       >
         Register
       </button>

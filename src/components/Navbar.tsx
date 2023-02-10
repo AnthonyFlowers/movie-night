@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import AuthContext from "./AuthContext";
-import DarkModeToggle from "./DarkModeToggle";
+import { AuthContext } from "./AuthContext";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 const navLinks = [
   {
@@ -29,7 +29,7 @@ const authLinks = [
   },
 ];
 
-export default function Navbar() {
+export const Navbar: React.FC = () => {
   const location = useLocation();
   const [activePage, setActivePage] = useState("");
   const { user, logout } = useContext(AuthContext);
@@ -85,7 +85,7 @@ export default function Navbar() {
             })}
             {!user ? (
               <Link
-                onClick={setActivePage.bind(null, "login")}
+                onClick={(e) => setActivePage("login")}
                 className={`nav-link${
                   ["login", "register"].includes(location.pathname.substring(1))
                     ? " active"
@@ -113,8 +113,8 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
-                <Link onClick={logout} className="nav-link">
-                  Logout: {user.sub}
+                <Link to={""} onClick={logout} className="nav-link">
+                  Logout: {user.username}
                 </Link>
               </>
             )}
@@ -124,4 +124,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-}
+};

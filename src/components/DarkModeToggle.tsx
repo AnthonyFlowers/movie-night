@@ -1,7 +1,8 @@
 import useDarkMode from "../hooks/useDarkMode";
-import { ReactComponent as Logo } from "../darkMode.svg";
+import { ReactComponent as Logo } from "./darkMode.svg";
+import React from "react";
 
-export default function DarkModeToggle() {
+export const DarkModeToggle: React.FC = () => {
   const [isDarkMode, toggleDarkMode] = useDarkMode();
 
   return (
@@ -11,9 +12,13 @@ export default function DarkModeToggle() {
         style={{ height: 20, width: 40 }}
       />
       <label className="switch">
-        <input type="checkbox" onClick={toggleDarkMode} defaultChecked={!isDarkMode} />
+        <input
+          type="checkbox"
+          onClick={toggleDarkMode}
+          defaultChecked={!isDarkMode}
+        />
         <span className="slider"></span>
       </label>
     </>
   );
-}
+};

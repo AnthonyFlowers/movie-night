@@ -1,30 +1,20 @@
-import { useContext, useState } from "react";
+import React, { FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authenticate } from "../services/authenticationService";
-import AuthContext from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
-function Login() {
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-  });
-
+const Login: React.FC = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
   const [errs, setErrs] = useState([]);
   const navigate = useNavigate();
 
-  function handleChange(evt) {
-    evt.preventDefault();
-    const newCredentials = { ...credentials };
-    newCredentials[evt.target.name] = evt.target.value;
-    setCredentials(newCredentials);
-  }
-
-  function handleSubmit(evt) {
+  function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     evt.stopPropagation();
 
-    authenticate(credentials)
+    authenticate({ username, password })
       .then((user) => {
         login(user);
         navigate("/");
@@ -43,8 +33,8 @@ function Login() {
           id="username"
           name="username"
           placeholder="Username"
-          onChange={handleChange}
-          value={credentials["username"]}
+          onChange={(e) => setUsername(e.target.value)}
+          value={username}
         />
       </div>
       <div className="form-outline mb-4">
@@ -57,8 +47,8 @@ function Login() {
           name="password"
           type="password"
           placeholder="********"
-          onChange={handleChange}
-          value={credentials["password"]}
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
         />
       </div>
       <button id="login" className="btn btn-success form-control" type="submit">
@@ -72,6 +62,6 @@ function Login() {
       </div>
     </form>
   );
-}
+};
 
 export default Login;

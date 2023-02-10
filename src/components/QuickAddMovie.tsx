@@ -1,23 +1,21 @@
-import { useState } from "react";
-import { getMovieByName } from "../services/movieService";
+import React, { useState } from "react";
+import { getMovieByName, Movie } from "../services/movieService";
 
-export default function QuickAddMovie({ addMovie }) {
+export const QuickAddMovie: React.FC<{
+  addMovie: (newMovie: Movie) => void;
+}> = ({ addMovie }) => {
   const [addingMovie, setAddingMovie] = useState(false);
   const [movieName, setMovieName] = useState("");
-  const [errs, setErrs] = useState([]);
+  const [errs, setErrs] = useState<string[]>([]);
 
   function reset() {
     setMovieName("");
-    setErrs("");
+    setErrs([""]);
   }
 
   function toggleAddingMovie() {
     setAddingMovie(!addingMovie);
     reset();
-  }
-
-  function handleMovieNameChange(evt) {
-    setMovieName(evt.target.value);
   }
 
   function handleAddMovie() {
@@ -54,7 +52,7 @@ export default function QuickAddMovie({ addMovie }) {
           <input
             value={movieName}
             className={`form-control me-2`}
-            onChange={handleMovieNameChange}
+            onChange={(e) => setMovieName(e.target.value)}
             placeholder="enter movie name"
           />
         </div>
@@ -68,4 +66,4 @@ export default function QuickAddMovie({ addMovie }) {
         : ""}
     </div>
   );
-}
+};

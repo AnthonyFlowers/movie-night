@@ -1,7 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { doesUserExist } from "../services/userService";
 
-export default function QuickAddUser({ addUser }) {
+export const QuickAddUser: React.FC<{ addUser: (u: string) => void }> = ({
+  addUser,
+}) => {
   const [addingUser, setAddingUser] = useState(false);
   const [username, setUsername] = useState("");
   const [errs, setErrs] = useState([]);
@@ -16,11 +18,7 @@ export default function QuickAddUser({ addUser }) {
     reset();
   }
 
-  function handleUsernameChange(evt) {
-    setUsername(evt.target.value);
-  }
-
-  function handleAddUser(evt) {
+  function handleAddUser() {
     doesUserExist(username)
       .then((u) => {
         addUser(u);
@@ -54,7 +52,7 @@ export default function QuickAddUser({ addUser }) {
           <input
             value={username}
             className={`form-control me-2`}
-            onChange={handleUsernameChange}
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="enter username"
           />
         </div>
@@ -68,4 +66,4 @@ export default function QuickAddUser({ addUser }) {
         : ""}
     </div>
   );
-}
+};

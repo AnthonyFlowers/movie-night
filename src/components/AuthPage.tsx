@@ -1,12 +1,12 @@
-import { useState } from "react";
+import React, { MouseEvent, MouseEventHandler, useState } from "react";
 import CreateAccount from "./CreateAccount";
 import Login from "./Login";
 
-export default function AuthPage() {
+const AuthPage: React.FC = () => {
   const [formState, setFormState] = useState("login");
 
-  function handleFormChange(event) {
-    setFormState(event.target.value);
+  function handleFormChange(value: string) {
+    setFormState(value);
   }
 
   return (
@@ -16,7 +16,7 @@ export default function AuthPage() {
           <button
             className={`nav-link${formState === "login" ? " active" : ""}`}
             value="login"
-            onClick={handleFormChange}
+            onClick={handleFormChange.bind(null, "login")}
           >
             Login
           </button>
@@ -25,7 +25,7 @@ export default function AuthPage() {
           <button
             className={`nav-link${formState === "register" ? " active" : ""}`}
             value="register"
-            onClick={handleFormChange}
+            onClick={handleFormChange.bind(null, "register")}
           >
             Register
           </button>
@@ -36,4 +36,6 @@ export default function AuthPage() {
       </div>
     </div>
   );
-}
+};
+
+export default AuthPage;

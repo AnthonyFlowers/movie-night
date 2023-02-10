@@ -3,9 +3,9 @@ import { LOCAL_STORAGE_TOKEN_KEY } from "./authenticationService";
 
 const USER_API = `${SERVER_URL}/api/user`;
 
-export async function doesUserExist(username) {
-  if(username === ""){
-    return Promise.reject(["blank user"])
+export async function doesUserExist(username: string) {
+  if (username === "") {
+    return Promise.reject(["blank user"]);
   }
   const response = await fetch(`${USER_API}/exists`, {
     method: "POST",
@@ -16,7 +16,7 @@ export async function doesUserExist(username) {
     body: JSON.stringify({ username: username }),
   });
   if (response.status === 200) {
-    console.log(username)
+    console.log(username);
     return Promise.resolve(username);
   } else {
     return Promise.reject([

@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import { getGroups } from "../services/groupService";
+import React, { useEffect, useState } from "react";
+import { getGroups, Group } from "../services/groupService";
+import { Movie } from "../services/movieService";
 
-export default function Home() {
-  const [groups, setGroups] = useState([]);
-  const [errs, setErrs] = useState([]);
+export const Home: React.FC = () => {
+  const [groups, setGroups] = useState<{ group: Group; topMovie: Movie }[]>([]);
+  const [errs, setErrs] = useState<string[]>([]);
 
   useEffect(() => {
-    let nextErrs = [];
+    let nextErrs: string[] = [];
     getGroups()
       .then(setGroups)
       .catch((e) => {
@@ -22,7 +23,7 @@ export default function Home() {
   return (
     <>
       {errs.length > 0 ? (
-        <div class="alert alert-danger" role="alert">
+        <div className="alert alert-danger" role="alert">
           {errs.map((e) => {
             return <p>{e}</p>;
           })}
@@ -40,12 +41,12 @@ export default function Home() {
           </tr>
         </thead>
         <tbody>
-          {groups.map((groupWithTopMovie) => {
+          {groups.map((group) => {
             return (
-              <tr key={groupWithTopMovie.group.groupId}>
-                <td>{groupWithTopMovie.group.groupName}</td>
-                <td>{groupWithTopMovie.group.users.length}</td>
-                <td>{groupWithTopMovie.topMovie.movieName}</td>
+              <tr key={group.group.groupId}>
+                <td>{group.group.groupName}</td>
+                <td>{group.group.users.length}</td>
+                <td>{group.topMovie.movieName}</td>
               </tr>
             );
           })}
@@ -53,4 +54,4 @@ export default function Home() {
       </table>
     </>
   );
-}
+};

@@ -1,46 +1,39 @@
-import { useContext } from "react";
-import { useState } from "react";
+import React, { FormEvent, useContext, useState } from "react";
 import { createGroup } from "../services/groupService";
-import AuthContext from "./AuthContext";
-import QuickAddMovie from "./QuickAddMovie";
-import QuickAddUser from "./QuickAddUser";
+import { Movie } from "../services/movieService";
+import { AuthContext } from "./AuthContext";
+import { QuickAddMovie } from "./QuickAddMovie";
+import { QuickAddUser } from "./QuickAddUser";
 
-export default function CreateGroup() {
+export const CreateGroup: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [groupName, setGroupName] = useState("");
 
-  const [movies, setMovies] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [errs, setErrs] = useState([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [users, setUsers] = useState<string[]>([]);
 
-  function handleNameChange(evt) {
-    setGroupName(evt.target.value);
-  }
-
-  function removeMovie(evt) {
-    const index = parseInt(evt.target.id.split("-")[1]);
+  function removeMovie(index: number) {
     const nextMovies = [...movies];
     nextMovies.splice(index, 1);
     // const nextMovies = movies.filter((m) => m.movieId !== movieId);
     setMovies(nextMovies);
   }
 
-  function removeUser(evt) {
-    const index = parseInt(evt.target.id.split("-")[1]);
+  function removeUser(index: number) {
     const nextUsers = [...users];
     nextUsers.splice(index, 1);
     setUsers(nextUsers);
   }
 
-  function addUser(newUser) {
+  function addUser(newUser: string) {
     const nextUsers =
-      newUser !== user.sub && users.indexOf(newUser) < 0
+      newUser !== user?.username && users.indexOf(newUser) < 0
         ? [...users, newUser]
         : users;
     setUsers(nextUsers);
   }
 
-  function addMovie(newMovie) {
+  function addMovie(newMovie: Movie) {
     let nextMovies = [...movies];
     if (!movies.filter((m) => m.movieId === newMovie.movieId).length) {
       nextMovies.push(newMovie);
@@ -48,10 +41,9 @@ export default function CreateGroup() {
     setMovies(nextMovies);
   }
 
-  function handleSubmit(evt) {
+  function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     evt.stopPropagation();
-    // console.log(evt);
     console.log({
       groupName: groupName,
       users: users,
@@ -59,11 +51,11 @@ export default function CreateGroup() {
       movies: movies,
     });
     createGroup({
+      groupId: null,
       groupName: groupName,
       users: users.map((u) => {
         return { username: u };
       }),
-
       movies: movies,
     })
       .then(console.log)
@@ -80,7 +72,7 @@ export default function CreateGroup() {
             type="text"
             id="groupName"
             className="form-control"
-            onChange={handleNameChange}
+            onChange={(e) => setGroupName(e.target.value)}
             placeholder="your group name"
           />
         </div>
@@ -88,7 +80,7 @@ export default function CreateGroup() {
           <label className="form-label">Members:</label>
           <QuickAddUser addUser={addUser} />
 
-          <p className="px-2 mb-0">{user ? `${user.sub} (Admin)` : ""}</p>
+          <p className="px-2 mb-0">{user ? `${user.username} (Admin)` : ""}</p>
           {users.map((u, i) => {
             return (
               <p key={i} className="px-2 my-0">
@@ -96,7 +88,7 @@ export default function CreateGroup() {
                 <span
                   className="btn btn-warning btn-custom-remove mx-3"
                   id={`user-${i}`}
-                  onClick={removeUser}
+                  onClick={(e) => removeUser.bind(i)}
                 >
                   Remove
                 </span>
@@ -114,8 +106,7 @@ export default function CreateGroup() {
                   {m.movieName}
                   <span
                     className="btn btn-warning btn-custom-remove mx-3"
-                    id={`movie-${i}`}
-                    onClick={removeMovie}
+                    onClick={(e) => removeMovie.bind(i)}
                   >
                     Remove
                   </span>
@@ -126,14 +117,8 @@ export default function CreateGroup() {
             <p className="px-3">no movies added</p>
           )}
         </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={handleSubmit}
-        >
-          Create Group
-        </button>
+        <button className="btn btn-primary">Create Group</button>
       </form>
     </>
   );
-}
+};

@@ -1,7 +1,15 @@
 import { SERVER_URL } from "./API";
 import { LOCAL_STORAGE_TOKEN_KEY } from "./authenticationService";
+import { Movie } from "./movieService";
 
 const groupApi = `${SERVER_URL}/api/movie-night/group`;
+
+export interface Group {
+  groupId: number | null;
+  groupName: string;
+  users: { username: string }[];
+  movies: Movie[];
+}
 
 export async function getGroups() {
   const response = await fetch(`${groupApi}/with-top-movies`);
@@ -14,7 +22,7 @@ export async function getGroups() {
 
 export function getUserGroups() {}
 
-export async function createGroup(group) {
+export async function createGroup(group: Group) {
   const response = await fetch(`${groupApi}`, {
     method: "POST",
     headers: {
@@ -31,4 +39,4 @@ export async function createGroup(group) {
   }
 }
 
-export function editGroup(group) {}
+// export function editGroup(group) {}
