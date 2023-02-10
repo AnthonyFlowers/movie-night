@@ -3,7 +3,6 @@ import { createContext } from "react";
 export interface User {
   appUserId: number;
   username: string;
-  enabled: boolean;
   roles: string[];
 }
 

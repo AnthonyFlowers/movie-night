@@ -10,7 +10,7 @@ export const QuickAddMovie: React.FC<{
 
   function reset() {
     setMovieName("");
-    setErrs([""]);
+    setErrs([]);
   }
 
   function toggleAddingMovie() {

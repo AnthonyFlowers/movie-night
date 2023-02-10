@@ -8,9 +8,9 @@ import { QuickAddUser } from "./QuickAddUser";
 export const CreateGroup: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [groupName, setGroupName] = useState("");
-
   const [movies, setMovies] = useState<Movie[]>([]);
   const [users, setUsers] = useState<string[]>([]);
+  const [errs, setErrs] = useState<string[]>([]);
 
   function removeMovie(index: number) {
     const nextMovies = [...movies];
@@ -44,12 +44,6 @@ export const CreateGroup: React.FC = () => {
   function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     evt.stopPropagation();
-    console.log({
-      groupName: groupName,
-      users: users,
-      admin: user,
-      movies: movies,
-    });
     createGroup({
       groupId: null,
       groupName: groupName,
@@ -58,13 +52,23 @@ export const CreateGroup: React.FC = () => {
       }),
       movies: movies,
     })
-      .then(console.log)
-      .catch(console.log);
+      .then((msg) => {
+        console.log(msg);
+        console.log("navigate to view group page");
+      })
+      .catch(setErrs);
   }
 
   return (
     <>
       <h3>Create Group</h3>
+      {errs.length
+        ? errs.map((e) => (
+            <small className="ms-2 text-danger" key={e}>
+              - {e}
+            </small>
+          ))
+        : ""}
       <form onSubmit={handleSubmit}>
         <div className="mt-5">
           <label className="form-label">Group Name</label>
@@ -80,7 +84,9 @@ export const CreateGroup: React.FC = () => {
           <label className="form-label">Members:</label>
           <QuickAddUser addUser={addUser} />
 
-          <p className="px-2 mb-0">{user ? `${user.username} (Admin)` : ""}</p>
+          <p className="px-2 mb-0">
+            {user ? `${user.username} (Moderator)` : ""}
+          </p>
           {users.map((u, i) => {
             return (
               <p key={i} className="px-2 my-0">

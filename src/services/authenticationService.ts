@@ -1,6 +1,8 @@
+import { User } from "../components/AuthContext";
 import { SERVER_URL } from "./API";
 
 export const LOCAL_STORAGE_TOKEN_KEY = "mymedia-jwt-token";
+
 export interface Credentials {
   username: string;
   password: string;
@@ -13,13 +15,18 @@ export interface RegisterCredentials {
 }
 const AUTH_URL = `${SERVER_URL}/auth`;
 
-function makeUser(body: { jwt: string }) {
+const makeUser = (body: { jwt: string }): User => {
+  localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, body.jwt);
   const sections = body.jwt.split(".");
   const json = atob(sections[1]);
-  const user = JSON.parse(json);
-  localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, body.jwt);
+  const parsed = JSON.parse(json);
+  const user: User = {
+    username: parsed.sub,
+    appUserId: parsed.app_user_id,
+    roles: parsed.authorities.split(","),
+  };
   return user;
-}
+};
 
 export async function authenticate(credentials: Credentials) {
   const init = {
@@ -38,6 +45,8 @@ export async function authenticate(credentials: Credentials) {
     return Promise.reject([
       "Could not login. Username/Password combination incorrect.",
     ]);
+  } else {
+    return Promise.reject(["Problem authenticating."]);
   }
 }
 

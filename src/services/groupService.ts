@@ -34,7 +34,7 @@ export async function createGroup(group: Group) {
   if (response.ok) {
     return Promise.resolve("Group Created");
   } else {
-    const body = response.body;
+    const body = await response.json();
     return Promise.reject([body]);
   }
 }

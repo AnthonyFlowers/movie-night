@@ -40,11 +40,10 @@ function App() {
       .then((user) => {
         login(user);
         setRefreshed(true);
-        console.log(user);
       })
-      .catch((ex) => {
+      .catch((e) => {
         logout();
-        console.log(ex);
+        console.log(e);
         setRefreshed(true);
       });
   }, [login]);
